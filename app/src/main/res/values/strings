@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">FinalApp</string>
+    <!--Welcome Activity -->
+    <string name="slide_1_title">Hello Food!</string>
+    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
+    <string name="slide_2_title">Movie Tickets</string>
+    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
+    <string name="slide_3_title">Great Discounts</string>
+    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
+    <string name="slide_4_title">World Travel</string>
+    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
+
+    <!--Menisfest Facebook app Id -->
+    <string name="facebook_app_id">509942186028206</string>
+
+    <string name="status">WELCOME</string>
+
+    <!-- Change the text for email OR phoSignUpActivityvity) -->
+    <string name="mobile">Mobile No.</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="phone">PHONE</string>
+    <string name="done">Done</string>
+
+    <string name="email">Email</string>
+    <string name="log_in">LOG IN</string>
+    <string name="log_in_small">Log in</string>
+    <string name="log_out">LOG Out</string>
+    <string name="log_in_text">Login</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="skip">SKIP </string>
+    <string name="account">Already have an account? </string>
+    <string name="dont_account">Don\'t have an account? </string>
+    <string name="email_address">EMAIL ADDRESS</string>
+    <string name="google">GOOGLE</string>
+    <string name="facebook">FACEBOOK</string>
+    <string name="create_account_text">- or create account -</string>
+    <string name="sign_up_text">- Sign up under 10 secs -</string>
+    <string name="check_out_text"> quick checkout</string>
+    <string name="line_text"> Sign up to get personalized experience</string>
+    <string name="already_account"> Already have an account?</string>
+
+
+    <string name="code_line"> ENTER CONFIRMATION CODE</string>
+    <string name="mobile_line"> Enter the 4- digit code we sent to </string>
+    <string name="mobile_num"> ********** </string>
+    <string name="resend_otp"> Request a New One. </string>
+    <string name="confirmation_code"> Confirmation Code </string>
+
+    <string name="enter_name_password"> ENTER NAME AND PASSWORD </string>
+    <string name="find_your_activity"> Find Your Account </string>
+    <string name="enter_email_mobile"> Please enter your email or phone </string>
+    <string name="email_mobile"> Email or Phone </string>
+    <string name="enter_mobile_number"> ENTER MOBILE NUMBER </string>
+    <string name="first_name"> First Name </string>
+    <string name="last_name"> Last Name </string>
+    <string name="password"> Password </string>
+    <string name="new_password">New Password </string>
+    <string name="old_password">Old Password </string>
+    <string name="conf_password">Confirm Password </string>
+    <string name="email_password">Email OR Mobile Number </string>
+    <string name="forgot">Forgot Password? </string>
+    <string name="change_pic">Change Picture </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="toolbar_title">Array Bit</string>
+    <string name="title_activity_home_navigation">HomeNavigationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="update">Update</string>
+
+    <string name="action_settings">Settings</string>
+
+
+</resources>
