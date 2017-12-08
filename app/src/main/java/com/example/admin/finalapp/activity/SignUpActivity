@@ -1,0 +1,208 @@
+package com.example.admin.finalapp.activity;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.example.admin.finalapp.database.SqliteHelper;
+import com.example.admin.finalapp.model.User;
+import com.example.admin.finalapp.util.Constants;
+
+import java.util.Random;
+
+import static com.example.admin.finalapp.util.Constants.IntentIsPhone;
+import static com.example.admin.finalapp.util.Constants.IntentRegistrationMobile;
+import static com.example.admin.finalapp.util.Constants.generateOTP;
+
+
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button btn_next;
+    private Button btn_phone;
+    private Button btn_email;
+    private Button btn_skip;
+    private Button btn_back;
+    private EditText et_mobile;
+    /*private EditText et_pass;*/
+    private SqliteHelper helper;
+    private View view1;
+    private View view2;
+    private String tabChangeEmail;
+    private String tabChangeMobile;
+    private boolean isMobile=true;
+    private boolean isEmail;
+    private String userId,pass;
+    private Random random;
+    private int otp_number;
+    private User user;
+    private TextView txt_login;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_up_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.toolbar_title);
+
+        et_mobile = (EditText) findViewById(R.id.et_mobile);
+        /*et_pass = (EditText) findViewById(R.id.et_pass);*/
+
+       /* btn_back = (Button) findViewById(R.id.btn_back);
+        btn_skip = (Button) findViewById(R.id.btn_skip);*/
+        btn_email = (Button) findViewById(R.id.btn_email);
+        btn_phone = (Button) findViewById(R.id.btn_phone);
+        btn_next = (Button) findViewById(R.id.btn_next);
+
+        txt_login = (TextView) findViewById(R.id.txt_login);
+
+        view1 = (View) findViewById(R.id.view1);
+        view2 = (View) findViewById(R.id.view2);
+
+        /*btn_back.setOnClickListener(this);
+        btn_skip.setOnClickListener(this);*/
+        btn_email.setOnClickListener(this);
+        btn_phone.setOnClickListener(this);
+        btn_next.setOnClickListener(this);
+
+        txt_login.setOnClickListener(this);
+
+        //Database
+        helper = new SqliteHelper(SignUpActivity.this);
+
+
+
+    }
+    // ************** Button Events *********************************
+    @Override
+    public void onClick(View view) {
+        /*if (view.getId() == R.id.btn_back)
+        {
+            onBackPressed();
+        }else if (view.getId() == R.id.btn_skip)
+        {
+            startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
+        }else */
+        if (view.getId() == R.id.btn_email)
+        {
+            selectEmail();
+        }else if (view.getId() == R.id.btn_phone)
+        {
+            selectPhone();
+        }else if (view.getId() == R.id.btn_next)
+        {
+            userId = et_mobile.getText().toString();
+            if (condition()) {
+                if (isMobile) {
+                    if (!helper.isMobileNumberExist(userId)) {
+                        generateOTP();
+                        Intent intent = new Intent(SignUpActivity.this,OneTimePasswordActivity.class);
+                        intent.putExtra(IntentRegistrationMobile, userId);
+                        startActivity(intent);
+                    }else {
+                         et_mobile.setError("Mobile No. Already have an accunt");
+                         et_mobile.setFocusable(true);
+                    }
+                } else if (isEmail) {
+                    if (!helper.isEmailExist(userId)) {
+                        Intent intent = new Intent(SignUpActivity.this,MobileSignUpActivity.class);
+                        intent.putExtra(Constants.IntentIsEmail, userId);
+                        startActivity(intent);
+                    } else {
+                        et_mobile.setError("Email Address. Already have an accunt");
+                        et_mobile.setFocusable(true);
+                    }
+                }
+            }
+        } else if (view.getId() == R.id.txt_login){
+            startActivity(new Intent(SignUpActivity.this,LogInActivity.class));
+        }
+    }
+
+
+    //**************************** Boolean condition **********************************
+    boolean condition() {
+        boolean isRight = false;
+        if (!TextUtils.isEmpty(userId)) {
+                if (isMobile) {
+                    if (Constants.isValidMobile(userId)) {
+                        isRight = true;
+                        isMobile = true;
+                    }else {
+                        et_mobile.setError("Enter valid Mobile Number");
+                        et_mobile.setFocusable(true);
+                    }
+                }else if (isEmail) {
+                    if (Constants.checkEmail(userId)) {
+                        isRight = true;
+                        isEmail = true;
+                    }else {
+                        et_mobile.setError("Enter valid Email Address");
+                        et_mobile.setFocusable(true);
+                    }
+                } else {
+                    et_mobile.setError("Enter Valid Value!!!!!!!!!!");
+                }
+        }else {
+            et_mobile.setError("Enter Valid Value!");
+            et_mobile.setFocusable(true);
+            isRight = false;
+        }
+
+        return isRight;
+    }
+
+    // ********************************  Select Phone **********************************
+    private void selectPhone() {
+        // Todo :- change colors
+        view1.setBackgroundColor(getResources().getColor(R.color.pink));
+        view2.setBackgroundColor(getResources().getColor(R.color.white));
+        btn_phone.setTextColor(getResources().getColor(R.color.pink));
+        btn_email.setTextColor(getResources().getColor(R.color.white));
+
+        // Todo :- get Entered Text
+        tabChangeEmail = et_mobile.getText().toString();
+
+        // Todo :- change EditText
+        et_mobile.setHint(getString(R.string.mobile));
+        et_mobile.setInputType(InputType.TYPE_CLASS_NUMBER);
+        et_mobile.setFocusable(true);
+        et_mobile.setText(tabChangeMobile);
+
+        // Todo :- boolean values
+        isMobile = true;
+        isEmail = false;
+    }
+
+    // ********************************  Select Email **********************************
+    private void selectEmail() {
+        // Todo :- change colors
+        view1.setBackgroundColor(getResources().getColor(R.color.white));
+        view2.setBackgroundColor(getResources().getColor(R.color.pink));
+        btn_phone.setTextColor(getResources().getColor(R.color.white));
+        btn_email.setTextColor(getResources().getColor(R.color.pink));
+
+        // Todo :- get Entered Text
+        tabChangeMobile = et_mobile.getText().toString();
+
+        // Todo :- change EditText
+        et_mobile.setHint(getString(R.string.email));
+        et_mobile.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        et_mobile.setFocusable(true);
+        et_mobile.setText(tabChangeEmail);
+
+        // Todo :- boolean values
+        isMobile = false;
+        isEmail = true;
+    }
+
+}
