@@ -1,0 +1,314 @@
+package com.example.admin.finalapp.database;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.example.admin.finalapp.model.User;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Admin on 01-12-2017.
+ */
+
+public class SqliteHelper extends SQLiteOpenHelper {
+
+    private static final String DB_NAME = "Registration";
+    private static final String TB_NAME = "user_table";
+    private static final String COL_ID = "user_id";
+    private static final String COL_PHONE = "user_phone";
+    private static final String COL_EMAILID = "user_emailId";
+    private static final String COL_PASSWORD = "user_password";
+    private static final String COL_FIRST_NAME = "user_firstName";
+    private static final String COL_LAST_NAME = "user_lastName";
+    private static final String COL_GENDER = "user_gender";
+    private static final String COL_BIRTHDAY = "user_birthday";
+    private static final String COL_PROFILE_PHOTO = "user_profilePhoto";
+    private static final int VERSION = 2;
+    private SQLiteDatabase sqLiteDatabase;
+    private String TAG=getClass().getSimpleName();
+
+    // **************  Create Database *****************************
+    public SqliteHelper(Context context) {
+        super(context, DB_NAME, null, VERSION);
+    }
+
+    // ************** create Table *********************************
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        String create_user_table = "CREATE TABLE "+TB_NAME+"("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
+                +COL_FIRST_NAME+" TEXT,"
+                +COL_LAST_NAME+" TEXT,"
+                +COL_EMAILID+" TEXT,"
+                +COL_PHONE+" TEXT,"
+                +COL_PASSWORD+" TEXT,"
+                +COL_PROFILE_PHOTO+" TEXT,"
+                +COL_GENDER+" TEXT,"
+                +COL_BIRTHDAY+" TEXT)";
+
+        sqLiteDatabase.execSQL(create_user_table);
+    }
+
+    // ************** Delete Table *********************************
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        String drop_user_table = "DROP TABLE IF EXISTS "+TB_NAME;
+        sqLiteDatabase.execSQL(drop_user_table);
+
+        onCreate(sqLiteDatabase);
+    }
+
+    // ************** Insert Data in Table *********************************
+    public void onInsert(User user) {
+        sqLiteDatabase = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_PHONE,user.getPhone());
+        values.put(COL_EMAILID,user.getEmailId());
+        values.put(COL_PASSWORD,user.getPassword());
+        values.put(COL_FIRST_NAME,user.getFirstName());
+        values.put(COL_LAST_NAME,user.getLastName());
+        values.put(COL_PROFILE_PHOTO,user.getProfilePhoto());
+        values.put(COL_GENDER,user.getGender());
+        values.put(COL_BIRTHDAY,user.getBirthDate());
+
+        sqLiteDatabase.insert(TB_NAME,null,values);
+        sqLiteDatabase.close();
+    }
+
+    // ************** Display Data from Table *********************************
+    public ArrayList<User> onDisplay() {
+
+        sqLiteDatabase = getReadableDatabase();
+        Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM " + TB_NAME, null);
+
+        ArrayList<User> list = new ArrayList<>();
+        while (c != null && c.moveToNext()) {
+
+            User user = new User();
+            user.setId(c.getInt(0));
+            user.setFirstName(c.getString(1));
+            user.setLastName(c.getString(2));
+            user.setEmailId(c.getString(3));
+            user.setPhone(c.getString(4));
+            user.setPassword(c.getString(5));
+            user.setProfilePhoto(c.getString(6));
+            user.setGender(c.getString(7));
+            user.setBirthDate(c.getString(8));
+
+            Log.d("SQLIte", user.getPassword());
+            list.add(user);
+        }
+        return list;
+    }
+
+    // ************** Delete data *********************************
+    public int onDelete(User user) {
+        sqLiteDatabase = getWritableDatabase();
+        int delete_sql = sqLiteDatabase.delete(TB_NAME,COL_ID +"= ?",new String[]{String.valueOf(user.getId())});
+        return delete_sql;
+    }
+
+    // ************** Update Data *********************************
+    public int onUpdate(User user) {
+
+        sqLiteDatabase = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_PHONE,user.getPhone());
+        values.put(COL_EMAILID,user.getEmailId());
+        values.put(COL_PASSWORD,user.getPassword());
+        values.put(COL_FIRST_NAME,user.getFirstName());
+        values.put(COL_LAST_NAME,user.getLastName());
+        values.put(COL_PROFILE_PHOTO,user.getProfilePhoto());
+        values.put(COL_GENDER,user.getGender());
+        values.put(COL_BIRTHDAY,user.getBirthDate());
+
+        int update_sql = sqLiteDatabase.update(TB_NAME,values,COL_PHONE +" = ?",new String[]{String.valueOf(user.getPhone())});
+
+        return update_sql;
+    }
+    /*public int onUpdateProfileMobile(User user) {
+
+        sqLiteDatabase = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        //values.put(COL_PHONE,user.getPhone());
+        values.put(COL_EMAILID,user.getEmailId());
+        //values.put(COL_PASSWORD,user.getPassword());
+        values.put(COL_FIRST_NAME,user.getFirstName());
+        values.put(COL_LAST_NAME,user.getLastName());
+        values.put(COL_PROFILE_PHOTO,user.getProfilePhoto());
+        values.put(COL_GENDER,user.getGender());
+        values.put(COL_BIRTHDAY,user.getBirthDate());
+
+        int update_sql = sqLiteDatabase.update(TB_NAME,values,COL_PHONE +" = ?",new String[]{String.valueOf(user.getPhone())});
+
+        return update_sql;
+    }
+    public int onUpdateProfileEmail(User user) {
+
+        sqLiteDatabase = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_PHONE,user.getPhone());
+        //values.put(COL_EMAILID,user.getEmailId());
+        //values.put(COL_PASSWORD,user.getPassword());
+        values.put(COL_FIRST_NAME,user.getFirstName());
+        values.put(COL_LAST_NAME,user.getLastName());
+        values.put(COL_PROFILE_PHOTO,user.getProfilePhoto());
+        values.put(COL_GENDER,user.getGender());
+        values.put(COL_BIRTHDAY,user.getBirthDate());
+
+        int update_sql = sqLiteDatabase.update(TB_NAME,values,COL_EMAILID +" = ?",new String[]{String.valueOf(user.getEmailId())});
+
+        return update_sql;
+    }*/
+    public void updateProfile(String ColumnName,String key,User user){
+        sqLiteDatabase = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COL_FIRST_NAME,user.getFirstName());
+        values.put(COL_LAST_NAME, user.getLastName());
+        values.put(COL_BIRTHDAY,user.getBirthDate());
+        values.put(COL_GENDER,user.getGender());
+        values.put(COL_EMAILID,user.getEmailId());
+        values.put(COL_PHONE,user.getPhone());
+        values.put(COL_PROFILE_PHOTO,user.getProfilePhoto());
+
+        /*String SQL = "UPDATE "+TableName+" SET "+FirstName+" = '"+model.getFirstName()+"' , "+LastName+" = '"+model.getLastName()+"' , "+Birthday+" = '"+model.getBirthDay()+"' WHERE "+ColumnName+" = '"+key+"' ";
+        sqLiteDatabase.execSQL(SQL);
+        Log.i(TAG, "updateProfile: "+SQL);*/
+        Log.i(TAG, "updateProfile: birthday"+values.get(COL_BIRTHDAY)+" , "+values.get(COL_GENDER)+" , "+values.get(COL_FIRST_NAME)+" , "+values.get(COL_LAST_NAME)+" , "+values.get(COL_EMAILID)+" , "+values.get(COL_PHONE)+" , "+values.get(COL_PROFILE_PHOTO));
+        sqLiteDatabase.update(TB_NAME,values,ColumnName+" = ?", new String[]{key});
+        sqLiteDatabase.close();
+    }
+    public int onUpdatePhone(User user) {
+
+        sqLiteDatabase = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_PASSWORD,user.getPassword());
+
+        int update_sql = sqLiteDatabase.update(TB_NAME,values,COL_PHONE +" = ?",new String[]{String.valueOf(user.getPhone())});
+
+        return update_sql;
+    }
+    public int onUpdateEmail(User user) {
+
+        sqLiteDatabase = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_PASSWORD,user.getPassword());
+        int update_sql = sqLiteDatabase.update(TB_NAME,values,COL_EMAILID +" = ?",new String[]{String.valueOf(user.getEmailId())});
+
+        return update_sql;
+    }
+
+    // ************** Email Id have or Not in Database*********************************
+    public boolean isEmailExist(String email) {
+        boolean exist = false;
+        sqLiteDatabase = getWritableDatabase();
+        Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM "+TB_NAME+" WHERE "+COL_EMAILID+" = '" +email + "'",null);
+        while (c.moveToNext()) {
+            if (c.getString(1)!=null) {
+                exist = true;
+            }
+            else {
+                exist = false;
+            }
+        }
+        return exist;
+    }
+    // ************** Phone number have or Not in Database*********************************
+    public boolean isMobileNumberExist(String mobileNumber) {
+        boolean exist = false;
+        sqLiteDatabase = getWritableDatabase();
+        Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM "+TB_NAME+" WHERE "+COL_PHONE+" = '" +mobileNumber + "'",null);
+        while (c.moveToNext()) {
+            if (c.getString(1)!=null) {
+                exist = true;
+            }
+            else {
+                exist = false;
+            }
+        }
+
+        return exist;
+    }
+    public User getMobileData(String mobile){
+
+        User user = new User();
+        SQLiteDatabase db =getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TB_NAME+" WHERE "+COL_PHONE+" = '" +mobile + "'",null);
+
+        while (cursor!=null &&cursor.moveToNext()){
+            user.setId(cursor.getInt(0));
+            user.setFirstName(cursor.getString(1));
+            user.setLastName(cursor.getString(2));
+            user.setEmailId(cursor.getString(3));
+            user.setPhone(cursor.getString(4));
+            user.setPassword(cursor.getString(5));
+            user.setProfilePhoto(cursor.getString(6));
+            user.setGender(cursor.getString(7));
+            user.setBirthDate(cursor.getString(8));
+        }
+        return user;
+    }
+    public User getEmailData(String email){
+
+        User user = new User();
+        SQLiteDatabase db =getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TB_NAME+" WHERE "+COL_EMAILID+" = '" +email + "'",null);
+
+        while (cursor!=null &&cursor.moveToNext()){
+            user.setId(cursor.getInt(0));
+            user.setFirstName(cursor.getString(1));
+            user.setLastName(cursor.getString(2));
+            user.setEmailId(cursor.getString(3));
+            user.setPhone(cursor.getString(4));
+            user.setPassword(cursor.getString(5));
+            user.setProfilePhoto(cursor.getString(6));
+            user.setGender(cursor.getString(7));
+            user.setBirthDate(cursor.getString(8));
+        }
+        return user;
+    }
+
+    // ************** Check email id and password  matched or not*********************************
+    public boolean loginValidation(String email,String password) {
+        boolean valid = false;
+        sqLiteDatabase = getWritableDatabase();
+        Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM "+TB_NAME+" WHERE "+COL_EMAILID+" = '" +email + "' and "+COL_PASSWORD+" = '" +password+"' " ,null);
+        while (c.moveToNext()) {
+            if (c.getString(1)!=null) {
+                valid = true;
+            }
+            else {
+                valid = false;
+            }
+        }
+
+        return valid;
+    }
+
+    // ************** Check Phone number and password  matched or not*********************************
+    public boolean loginValidationMobile(String mobile_number,String password) {
+        boolean valid = false;
+        sqLiteDatabase = getReadableDatabase();
+        Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM "+TB_NAME+" WHERE "+COL_PHONE+" = '" +mobile_number + "' and "+COL_PASSWORD+" = '" +password+"' " ,null);
+        while (c.moveToNext()) {
+            if (c.getString(1)!=null) {
+                valid = true;
+            }
+            else {
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+}
